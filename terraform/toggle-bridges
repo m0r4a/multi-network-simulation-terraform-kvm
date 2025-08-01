@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+readonly GREEN='\033[0;32m'
+readonly RED='\033[0;31m'
+readonly NC='\033[0m'
+
+bridges=("br-admin" "br-webserver" "br-users")
+
+missing_bridges=()
+existing_bridges=()
+
+for bridge in "${bridges[@]}"; do
+    if ip link show "$bridge" &>/dev/null; then
+        existing_bridges+=("$bridge")
+    else
+        missing_bridges+=("$bridge")
+    fi
+done
+
+if [[ ${#missing_bridges[@]} -gt 0 ]]; then
+   # Create bridges
+    for bridge in "${missing_bridges[@]}"; do
+        sudo ip link add name "$bridge" type bridge
+        sudo ip link set "$bridge" up
+    done
+    echo -e "Created bridges: ${GREEN}${missing_bridges[*]}${NC}"
+else
+    # Remove bridges
+    for bridge in "${existing_bridges[@]}"; do
+        sudo ip link set "$bridge" down
+        sudo ip link delete "$bridge"
+    done
+    echo -e "Removed bridges: ${RED}${existing_bridges[*]}${NC}"
+fi
