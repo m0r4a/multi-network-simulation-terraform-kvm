@@ -10,7 +10,7 @@ resource "libvirt_volume" "rocky_linux" {
 module "admin_network" {
   source = "./modules/network"
   network_name = "admin-net"
-  bridge_name = "virbr0"
+  bridge_name = "br-admin"
   network_cidr = "10.0.0.0/24"
 }
 
