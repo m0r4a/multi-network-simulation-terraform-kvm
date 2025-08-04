@@ -41,3 +41,8 @@ variable "ip_address" {
   description = "Static IP address for the VM"
   type        = string
 }
+
+variable "mask" {
+  description = "Mask for the network"
+  type        = string
+}

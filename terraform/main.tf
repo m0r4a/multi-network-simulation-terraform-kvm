@@ -23,6 +23,7 @@ module "gateway" {
  
   base_volume_id = libvirt_volume.rocky_linux.id
 
-  ip_address = "10.0.0.1"
+  ip_address = "10.0.0.2"
+  mask = "255.255.255.252"
   network_id = module.admin_network.id
 }

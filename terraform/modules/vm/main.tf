@@ -1,22 +1,10 @@
-resource "libvirt_volume" "vm_disk" {
-  name           = "${var.vm_name}-disk"
-  base_volume_id = var.base_volume_id
-  size           = var.disk_size
-  format         = "qcow2"
-}
-
-resource "libvirt_cloudinit_disk" "commoninit" {
-  name      = "commoninit.iso"
-  user_data = data.template_file.user_data.rendered
-  network_config = data.template_file.network_config.rendered
-}
-
-data "template_file" "user_data" {
-  template = file("${path.module}/cloud_init.cfg")
-}
-
-data "template_file" "network_config" {
-  template = file("${path.module}/network.cfg")
+terraform {
+  required_providers {
+    libvirt = {
+      source  = "dmacvicar/libvirt"
+      version = "~> 0.8.3"
+    }
+  }
 }
 
 resource "libvirt_domain" "vm" {
@@ -29,7 +17,7 @@ resource "libvirt_domain" "vm" {
   cloudinit = libvirt_cloudinit_disk.commoninit.id
 
   xml {
-    xslt = file("${path.module}/cdrom-model.xsl")
+    xslt = file("${path.module}/.cdrom-model.xsl")
   }
 
   disk {
