@@ -23,12 +23,14 @@ resource "libvirt_domain" "vm" {
   disk {
     volume_id = libvirt_volume.vm_disk.id
   }
-  
-  network_interface {
-    hostname       = var.vm_name
-    network_id     = var.network_id
-    addresses      = [var.ip_address]
-  }
+
+  dynamic "network_interface" {
+    for_each = var.network_interfaces
+    content {
+      bridge = network_interface.value.bridge
+      addresses = [network_interface.value.address]
+    }
+}
 
   cpu {
     mode = "host-passthrough"

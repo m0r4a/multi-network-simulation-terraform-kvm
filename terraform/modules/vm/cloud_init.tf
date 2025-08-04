@@ -6,21 +6,18 @@ resource "libvirt_volume" "vm_disk" {
 }
 
 resource "libvirt_cloudinit_disk" "commoninit" {
-  name      = "commoninit.iso"
-  user_data = data.template_file.user_data.rendered
-  network_config = data.template_file.network_config.rendered
+  name           = "${var.vm_name}-commoninit.iso"
+  user_data      = data.template_file.user_data.rendered
+
+  network_config = templatefile(
+    "${path.module}/cloudinit_files/network.cfg",
+    {
+      interfaces_v2 = var.network_interfaces
+    }
+  )
 }
 
 data "template_file" "user_data" {
-  template = file("${path.module}/cloudinit_files/cloud_init.cfg")
-
+  template = file("${path.module}/cloudinit_files/${var.cloudinit_file}")
 }
 
-data "template_file" "network_config" {
-  template = file("${path.module}/cloudinit_files/network.cfg")
-
-  vars = {
-    ip_address = var.ip_address
-    mask       = var.mask
-  }
-}

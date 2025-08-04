@@ -17,7 +17,7 @@ variable "disk_size" {
 variable "memory" {
   description = "Memory allocation in MB"
   type        = number
-  default     = 2048
+  default     = 1024
 }
 
 variable "vcpu" {
@@ -29,20 +29,27 @@ variable "vcpu" {
 variable "autostart" {
   description = "Autostart the VM"
   type        = bool
-  default     = true
+  default     = false
 }
 
-variable "network_id" {
-  description = "Network ID to attach the VM"
+variable "cloudinit_file" {
+  description = "Name of the cloudinit file"
   type        = string
+  default     = "cloud_init.cfg"
 }
 
-variable "ip_address" {
-  description = "Static IP address for the VM"
+variable "cloudinit_network" {
+  description = "Name of the cloudinit network file"
   type        = string
+  default     = "network.cfg"
 }
 
-variable "mask" {
-  description = "Mask for the network"
-  type        = string
+variable "network_interfaces" {
+  type = list(object({
+    bridge    = string
+    address   = string
+    cidr      = string
+  }))
+
+  description = "Config for every interface"
 }

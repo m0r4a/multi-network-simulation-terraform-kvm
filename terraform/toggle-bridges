@@ -4,7 +4,7 @@ readonly GREEN='\033[0;32m'
 readonly RED='\033[0;31m'
 readonly NC='\033[0m'
 
-bridges=("br-admin" "br-webserver" "br-users")
+bridges=("br-admin" "br-webserver" "br-user")
 
 missing_bridges=()
 existing_bridges=()

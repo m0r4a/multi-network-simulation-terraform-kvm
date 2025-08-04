@@ -7,23 +7,45 @@ resource "libvirt_volume" "rocky_linux" {
   source = "/var/lib/libvirt/images/Rocky-10-cloud.qcow2"
 }
 
-module "admin_network" {
-  source = "./modules/network"
-  network_name = "admin-net"
-  bridge_name = "br-admin"
-  network_cidr = "10.0.0.0/24"
-}
 
 module "gateway" {
   source = "./modules/vm"
   vm_name = "gateway"
-  autostart = true
-  memory         = 2048
-  vcpu           = 4
+  memory         = 1024
+  vcpu           = 1
  
   base_volume_id = libvirt_volume.rocky_linux.id
 
-  ip_address = "10.0.0.2"
-  mask = "255.255.255.252"
-  network_id = module.admin_network.id
+  network_interfaces = [
+  { bridge = "br-admin", address = "10.0.0.1", cidr = "30" },
+  { bridge = "br-user", address = "10.0.1.1", cidr = "24" }
+  ]
+}
+
+
+module "admin" {
+  source = "./modules/vm"
+  vm_name = "admin"
+  memory         = 512
+  vcpu           = 1
+ 
+  base_volume_id = libvirt_volume.rocky_linux.id
+
+  network_interfaces = [
+  { bridge = "br-admin", address = "10.0.0.2", cidr = "30"}
+  ]
+
+}
+
+module "user" {
+  source  = "./modules/vm"
+  vm_name = "user"
+  memory  = 1024
+  vcpu    = 1
+
+  base_volume_id = libvirt_volume.rocky_linux.id
+
+  network_interfaces = [
+  { bridge = "br-user", address = "10.0.1.100", cidr = "24"}
+  ]
 }
