@@ -7,6 +7,10 @@ resource "libvirt_volume" "rocky_linux" {
   source = "/var/lib/libvirt/images/Rocky-10-cloud.qcow2"
 }
 
+resource "libvirt_volume" "ubuntu_server" {
+  name = "ubuntu_server"
+  source = "/var/lib/libvirt/images/ubuntu-noble-24.04.img"
+}
 
 module "gateway" {
   source = "./modules/vm"
@@ -43,7 +47,7 @@ module "user" {
   memory  = 1024
   vcpu    = 1
 
-  base_volume_id = libvirt_volume.rocky_linux.id
+  base_volume_id = libvirt_volume.ubuntu_server.id
 
   network_interfaces = [
   { bridge = "br-user", address = "10.0.1.100", cidr = "24"}

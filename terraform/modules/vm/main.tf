@@ -7,6 +7,8 @@ terraform {
   }
 }
 
+
+
 resource "libvirt_domain" "vm" {
   name       = var.vm_name
   memory     = var.memory
