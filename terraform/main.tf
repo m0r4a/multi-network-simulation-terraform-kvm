@@ -21,8 +21,8 @@ module "gateway" {
   base_volume_id = libvirt_volume.rocky_linux.id
 
   network_interfaces = [
-  { bridge = "br-admin", address = "10.0.0.1", cidr = "30" },
-  { bridge = "br-user", address = "10.0.1.1", cidr = "24" }
+  { bridge = "br-admin", address = "10.0.0.1", cidr = "30"},
+  { bridge = "br-user", address = "10.0.1.1", cidr = "24"}
   ]
 }
 
@@ -36,7 +36,7 @@ module "admin" {
   base_volume_id = libvirt_volume.rocky_linux.id
 
   network_interfaces = [
-  { bridge = "br-admin", address = "10.0.0.2", cidr = "30"}
+  { bridge = "br-admin", address = "10.0.0.2", cidr = "30", gateway = "10.0.0.1"}
   ]
 
 }
@@ -50,6 +50,6 @@ module "user" {
   base_volume_id = libvirt_volume.ubuntu_server.id
 
   network_interfaces = [
-  { bridge = "br-user", address = "10.0.1.100", cidr = "24"}
+  { bridge = "br-user", address = "10.0.1.100", cidr = "24", gateway = "10.0.1.1"}
   ]
 }

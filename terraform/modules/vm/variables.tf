@@ -49,6 +49,7 @@ variable "network_interfaces" {
     bridge    = string
     address   = string
     cidr      = string
+    gateway   = optional(string, "")
   }))
 
   description = "Config for every interface"
