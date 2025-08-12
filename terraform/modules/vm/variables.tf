@@ -54,3 +54,16 @@ variable "network_interfaces" {
 
   description = "Config for every interface"
 }
+
+variable "ssh_private_key" {
+  description = "Private key for ssh"
+  type        = string
+  default     = ""
+}
+
+variable "ssh_public_key" {
+  description = "Public key for ssh"
+  type        = string
+  default     = ""
+}
+

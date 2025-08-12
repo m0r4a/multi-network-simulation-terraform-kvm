@@ -19,5 +19,9 @@ resource "libvirt_cloudinit_disk" "commoninit" {
 
 data "template_file" "user_data" {
   template = file("${path.module}/cloudinit_files/${var.cloudinit_file}")
+  vars =  {
+    private_key = var.ssh_private_key
+    public_key = var.ssh_public_key
+  }
 }
 
