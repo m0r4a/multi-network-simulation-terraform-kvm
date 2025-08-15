@@ -1,0 +1,66 @@
+- name: Temp thing, add Cloudflare as DNS
+
+  hosts: gateway
+
+  become: true
+
+  tasks:
+    - name: Create /etc/resolv.conf with Cloudflare
+      ansible.builtin.copy:
+
+        dest: /etc/resolv.conf
+
+        content: |
+          nameserver 1.1.1.1
+
+        mode: '0644'
+
+
+- name: Configure gateway as a gateway lol
+
+  hosts: gateway
+
+  become: true
+
+  collections:
+    - ansibleguy.nftables
+
+  tasks:
+    - name: Enable packet forwarding
+      ansible.builtin.sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        state: present
+        reload: true
+
+    - name: Ensure nftables package and python binding
+      ansible.builtin.package:
+        name:
+          - nftables
+          - python3-nftables
+        state: present
+
+    - name: Create table ip nat
+      ansibleguy.nftables.table:
+        name: nat
+        family: ip
+        state: present
+
+    - name: Create POSTROUTING chain (type nat, hook postrouting)
+      ansibleguy.nftables.chain:
+        table: nat
+        table_family: ip
+        name: POSTROUTING
+        type: nat
+        policy: accept
+        hook: postrouting
+        priority: 100
+        state: present
+
+    - name: Add masquerade rule on enp1s0
+      ansibleguy.nftables.rule_raw:
+        id: masq_enp2s0
+        table: nat
+        chain: POSTROUTING
+        rule: 'oifname "enp1s0" masquerade'
+        state: present

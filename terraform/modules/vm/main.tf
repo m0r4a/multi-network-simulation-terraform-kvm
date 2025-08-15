@@ -14,9 +14,9 @@ resource "libvirt_domain" "vm" {
   memory     = var.memory
   vcpu       = var.vcpu
   autostart  = var.autostart
-  machine   = "q35"
+  machine    = "q35"
   qemu_agent = true
-  cloudinit = libvirt_cloudinit_disk.commoninit.id
+  cloudinit  = libvirt_cloudinit_disk.commoninit.id
 
   xml {
     xslt = file("${path.module}/.cdrom-model.xsl")
@@ -29,10 +29,10 @@ resource "libvirt_domain" "vm" {
   dynamic "network_interface" {
     for_each = var.network_interfaces
     content {
-      bridge = network_interface.value.bridge
+      bridge    = network_interface.value.bridge
       addresses = [network_interface.value.address]
     }
-}
+  }
 
   cpu {
     mode = "host-passthrough"
@@ -43,13 +43,13 @@ resource "libvirt_domain" "vm" {
     target_port = "0"
     target_type = "serial"
   }
-  
+
   console {
     type        = "pty"
     target_type = "virtio"
     target_port = "1"
   }
-  
+
   graphics {
     type        = "spice"
     listen_type = "address"

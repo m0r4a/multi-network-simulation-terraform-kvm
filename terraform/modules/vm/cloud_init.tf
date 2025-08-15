@@ -6,8 +6,8 @@ resource "libvirt_volume" "vm_disk" {
 }
 
 resource "libvirt_cloudinit_disk" "commoninit" {
-  name           = "${var.vm_name}-commoninit.iso"
-  user_data      = data.template_file.user_data.rendered
+  name      = "${var.vm_name}-commoninit.iso"
+  user_data = data.template_file.user_data.rendered
 
   network_config = templatefile(
     "${path.module}/cloudinit_files/network.cfg",
@@ -19,9 +19,9 @@ resource "libvirt_cloudinit_disk" "commoninit" {
 
 data "template_file" "user_data" {
   template = file("${path.module}/cloudinit_files/${var.cloudinit_file}")
-  vars =  {
+  vars = {
     private_key = var.ssh_private_key
-    public_key = var.ssh_public_key
+    public_key  = var.ssh_public_key
   }
 }
 

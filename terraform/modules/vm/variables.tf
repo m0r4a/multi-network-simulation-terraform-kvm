@@ -46,10 +46,10 @@ variable "cloudinit_network" {
 
 variable "network_interfaces" {
   type = list(object({
-    bridge    = string
-    address   = string
-    cidr      = string
-    gateway   = optional(string, "")
+    bridge  = string
+    address = string
+    cidr    = string
+    gateway = optional(string, "")
   }))
 
   description = "Config for every interface"
@@ -59,6 +59,7 @@ variable "ssh_private_key" {
   description = "Private key for ssh"
   type        = string
   default     = ""
+  sensitive   = true
 }
 
 variable "ssh_public_key" {

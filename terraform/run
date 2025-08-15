@@ -24,11 +24,14 @@ if [[ ${#missing_bridges[@]} -gt 0 ]]; then
         sudo ip link set "$bridge" up
     done
     echo -e "Created bridges: ${GREEN}${missing_bridges[*]}${NC}"
-else
-    # Remove bridges
-    for bridge in "${existing_bridges[@]}"; do
-        sudo ip link set "$bridge" down
-        sudo ip link delete "$bridge"
-    done
-    echo -e "Removed bridges: ${RED}${existing_bridges[*]}${NC}"
 fi
+
+# Checking if there's any resources in use
+if [[ -n $(terraform state list) ]]; then
+  terraform destroy -auto-approve
+fi
+
+terraform apply -auto-approve
+
+terraform output -json hosts_for_ansible \
+  | jq -r 'to_entries[] | "[" + .key + "]\n" + (.value | join("\n")) + "\n"' > ../ansible/inventory.ini
